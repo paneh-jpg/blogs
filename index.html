@@ -8,7 +8,7 @@
     <!-- CND TailWind CSS  -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <style type="text/css">
+    <style type="text/tailwindcss">
       @layer components {
         .pagination {
           @apply cursor-pointer hover:bg-green-300 border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
@@ -19,7 +19,7 @@
         }
 
         .view-all-btn {
-          @apply cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-500 hover:bg-green-400 font-semibold;
+          @apply cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-500 active:scale-90 transition-transform hover:bg-green-400 hover:text-[#FFF] font-semibold;
         }
 
         .edit-btn {
@@ -59,6 +59,10 @@
           max-width: 1200px;
         }
       }
+
+      .active {
+        background-color: yellow;
+      }
     </style>
   </head>
   <body>
@@ -72,7 +76,7 @@
       <main>
         <!-- Search Form -->
         <div>
-          <form action="">
+          <form action="" id="search-form">
             <input
               class="border border-[#ebebeb] outline-none focus:border-[#d1cccc] w-full mt-3 p-3 text-[16px]"
               type="text"
@@ -94,11 +98,13 @@
           <!-- Action  -->
           <div class="mt-2">
             <button
-              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+              id="desc-btn"
+              class="active cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
             >
               Mới nhất
             </button>
             <button
+              id="asc-btn"
               class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1 ml-1"
             >
               Cũ nhất
@@ -150,7 +156,11 @@
         <div class="pagination">36</div>
       </footer>
     </div>
-
+    <div class="modal">
+      <div class="modal-header"></div>
+      <div class="modal-content"></div>
+      <div class="modal-footer"></div>
+    </div>
     <script src="./main.js"></script>
   </body>
 </html>
