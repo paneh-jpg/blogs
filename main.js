@@ -123,26 +123,45 @@ function searchBlogs() {
 
 function sortBlogs() {
   ascBtn.addEventListener("click", () => {
+    searchInput.value = "";
     descBtn.classList.remove("active");
     ascBtn.classList.add("active");
     getBlogs("asc");
   });
 
   descBtn.addEventListener("click", () => {
+    searchInput.value = "";
     ascBtn.classList.remove("active");
     descBtn.classList.add("active");
     getBlogs("desc");
   });
 }
 
+function getScrollbarWidth() {
+  const box = document.createElement("div");
+
+  Object.assign(box.style, {
+    position: "absolute",
+    top: "-9999px",
+    overflow: "scroll",
+  });
+
+  document.body.append(box);
+
+  const scrollbarWidth = box.offsetWidth - box.clientWidth;
+  return scrollbarWidth;
+}
+
 function openModal() {
   modal.classList.add("show");
   document.body.classList.add("no-scroll");
+  document.body.style.paddingRight = getScrollbarWidth() + "px";
 }
 
 function closeModal() {
   modal.classList.remove("show");
   document.body.classList.remove("no-scroll");
+  document.body.style.paddingRight = "";
 }
 
 modalCloseBtn.addEventListener("click", closeModal);
