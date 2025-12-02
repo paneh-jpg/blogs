@@ -5,46 +5,32 @@ const ascBtn = document.querySelector("#asc-btn");
 
 const baseApi = "https://dummyjson.com";
 
-function build(post) {
+function buildPost(post) {
   const li = document.createElement("li");
   li.className = "blog";
 
-  const h2 = document.createElement("h2");
-  h2.className = "font-semibold text-2xl";
-  h2.textContent = post.title;
-
-  const p = document.createElement("p");
-  p.className = "mt-2 font-normal";
-  p.textContent = post.body;
-
-  const actions = document.createElement("div");
-  actions.className = "mt-3 flex justify-between";
-
-  const viewAllBtn = document.createElement("button");
-  viewAllBtn.className = "view-all-btn";
-  viewAllBtn.textContent = " Xem chi tiết";
-
-  const actionsRight = document.createElement("div");
-  actionsRight.className = "";
-
-  const editBtn = document.createElement("button");
-  editBtn.className = "edit-btn";
-  editBtn.textContent = "Sửa";
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.className = "delete-btn";
-  deleteBtn.textContent = "Xóa";
-
-  li.append(h2, p, actions);
-  actions.append(viewAllBtn, actionsRight);
-  actionsRight.append(editBtn, deleteBtn);
+  li.innerHTML = `    <h2 class="font-semibold text-2xl">${post.title}</h2>
+    <p class="mt-2 font-normal">${post.body}</p>
+    <div class="mt-3 flex justify-between">
+      <button class="view-all-btn">Xem chi tiết</button>
+      <div>
+        <button class="edit-btn">Sửa</button>
+        <button class="delete-btn">Xóa</button>
+      </div>
+    </div>`;
 
   blogsList.append(li);
+  return li;
+}
+
+function clearBlogs() {
+  blogsList.innerHTML = "";
 }
 
 function renderBlogs(posts) {
+  clearBlogs();
   posts.forEach((post) => {
-    build(post);
+    buildPost(post);
   });
 }
 
