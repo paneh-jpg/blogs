@@ -3,15 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Blogs</title>
 
     <!-- CND TailWind CSS  -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <style type="text/tailwindcss">
+    <style type="text/css">
       @layer components {
         .pagination {
-          @apply border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
+          @apply cursor-pointer hover:bg-green-300 border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
+        }
+
+        .blog {
+          @apply border mb-3 border-[#ebebeb] p-3;
+        }
+
+        .view-all-btn {
+          @apply cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-500 hover:bg-green-400 font-semibold;
+        }
+
+        .edit-btn {
+          @apply cursor-pointer font-semibold mr-2;
+        }
+
+        .delete-btn {
+          @apply cursor-pointer font-semibold text-red-400 mx-1;
         }
       }
 
@@ -25,17 +41,17 @@
       }
       @media (min-width: 768px) {
         .container {
-          max-width: 768px;
+          max-width: 700px;
         }
       }
       @media (min-width: 1024px) {
         .container {
-          max-width: 1024px;
+          max-width: 900px;
         }
       }
       @media (min-width: 1280px) {
         .container {
-          max-width: 1280px;
+          max-width: 1200px;
         }
       }
       @media (min-width: 1536px) {
@@ -90,141 +106,7 @@
           </div>
 
           <!-- Blogs List  -->
-          <ul class="mt-3">
-            <li class="border mb-3 border-[#ebebeb] p-3">
-              <h2 class="font-semibold text-2xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </h2>
-              <p class="mt-2 font-normal">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                quod iste exercitationem ipsa provident explicabo voluptatum
-                quasi consequatur laborum nobis assumenda ut autem facere quam
-                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
-                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
-                possimus cupiditate soluta alias nulla. Magnam, porro in!
-              </p>
-
-              <div class="mt-3 flex justify-between">
-                <button
-                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
-                >
-                  Xem chi tiết
-                </button>
-                <div>
-                  <button class="font-semibold">Sửa</button>
-                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
-                </div>
-              </div>
-            </li>
-
-            <li class="border mb-3 border-[#ebebeb] p-3">
-              <h2 class="font-semibold text-2xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </h2>
-              <p class="mt-2 font-normal">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                quod iste exercitationem ipsa provident explicabo voluptatum
-                quasi consequatur laborum nobis assumenda ut autem facere quam
-                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
-                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
-                possimus cupiditate soluta alias nulla. Magnam, porro in!
-              </p>
-
-              <div class="mt-3 flex justify-between">
-                <button
-                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
-                >
-                  Xem chi tiết
-                </button>
-                <div>
-                  <button class="font-semibold">Sửa</button>
-                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
-                </div>
-              </div>
-            </li>
-
-            <li class="border mb-3 border-[#ebebeb] p-3">
-              <h2 class="font-semibold text-2xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </h2>
-              <p class="mt-2 font-normal">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                quod iste exercitationem ipsa provident explicabo voluptatum
-                quasi consequatur laborum nobis assumenda ut autem facere quam
-                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
-                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
-                possimus cupiditate soluta alias nulla. Magnam, porro in!
-              </p>
-
-              <div class="mt-3 flex justify-between">
-                <button
-                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
-                >
-                  Xem chi tiết
-                </button>
-                <div>
-                  <button class="font-semibold">Sửa</button>
-                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
-                </div>
-              </div>
-            </li>
-
-            <li class="border mb-3 border-[#ebebeb] p-3">
-              <h2 class="font-semibold text-2xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </h2>
-              <p class="mt-2 font-normal">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                quod iste exercitationem ipsa provident explicabo voluptatum
-                quasi consequatur laborum nobis assumenda ut autem facere quam
-                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
-                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
-                possimus cupiditate soluta alias nulla. Magnam, porro in!
-              </p>
-
-              <div class="mt-3 flex justify-between">
-                <button
-                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
-                >
-                  Xem chi tiết
-                </button>
-                <div>
-                  <button class="cursor-pointer font-semibold">Sửa</button>
-                  <button
-                    class="cursor-pointer font-semibold text-red-400 mx-1"
-                  >
-                    Xóa
-                  </button>
-                </div>
-              </div>
-            </li>
-
-            <li class="border mb-3 border-[#ebebeb] p-3">
-              <h2 class="font-semibold text-2xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </h2>
-              <p class="mt-2 font-normal">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                quod iste exercitationem ipsa provident explicabo voluptatum
-                quasi consequatur laborum nobis assumenda ut autem facere quam
-                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
-                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
-                possimus cupiditate soluta alias nulla. Magnam, porro in!
-              </p>
-
-              <div class="mt-3 flex justify-between">
-                <button
-                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
-                >
-                  Xem chi tiết
-                </button>
-                <div>
-                  <button class="font-semibold">Sửa</button>
-                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <ul id="blogs-list" class="mt-3"></ul>
         </div>
       </main>
 
@@ -268,5 +150,7 @@
         <div class="pagination">36</div>
       </footer>
     </div>
+
+    <script src="./main.js"></script>
   </body>
 </html>
