@@ -16,7 +16,7 @@ function buildBlog(post) {
   li.className = "blog";
 
   li.innerHTML = `    <h2 class="font-semibold text-2xl">${post.title}</h2>
-    <p class="mt-2 font-normal">${post.body}</p>
+    <p class="blog-desc mt-2 font-normal">${post.body}</p>
     <div class="mt-3 flex justify-between">
       <button class="view-all-btn">Xem chi tiết</button>
       <div>
