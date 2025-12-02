@@ -3,9 +3,15 @@ const searchInput = document.querySelector("#search-input");
 const descBtn = document.querySelector("#desc-btn");
 const ascBtn = document.querySelector("#asc-btn");
 
-const baseApi = "https://dummyjson.com";
+const modal = document.querySelector("#modal");
+const modalTitle = document.querySelector("#modal-content h2");
+const modalBody = document.querySelector("#modal-content p");
+const modalCloseBtn = document.querySelector(".close-modal");
 
-function buildPost(post) {
+const baseApi = "https://dummyjson.com";
+let isFirstClick = true;
+
+function buildBlog(post) {
   const li = document.createElement("li");
   li.className = "blog";
 
@@ -19,8 +25,37 @@ function buildPost(post) {
       </div>
     </div>`;
 
-  blogsList.append(li);
+  li.querySelector(".view-all-btn").addEventListener("click", () => {
+    loadBlogDetail(post.id);
+  });
+
   return li;
+}
+
+function showModalLoading() {
+  modalTitle.textContent = "Loading...";
+  modalBody.textContent = "Đang tải dữ liệu bài viết...";
+}
+
+async function loadBlogDetail(id) {
+  openModal();
+  showModalLoading();
+
+  const url = `${baseApi}/posts/${id}`;
+  const data = await fetchBlogs(url);
+
+  if (!data) return;
+  if (isFirstClick) {
+    isFirstClick = false;
+
+    setTimeout(() => {
+      modalTitle.textContent = data.title;
+      modalBody.textContent = data.body;
+    }, 1000);
+  } else {
+    modalTitle.textContent = data.title;
+    modalBody.textContent = data.body;
+  }
 }
 
 function clearBlogs() {
@@ -29,89 +64,78 @@ function clearBlogs() {
 
 function renderBlogs(posts) {
   clearBlogs();
-  posts.forEach((post) => {
-    buildPost(post);
-  });
-}
-
-async function getBlogs() {
-  const url = `${baseApi}/posts?sortBy=id&order=desc`;
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new error(`Response status: ${response.status}`);
-    }
-    const result = await response.json();
-    blogsList.innerHTML = "";
-    renderBlogs(result.posts);
-  } catch (error) {
-    console.error(error.message);
+  if (posts.length > 0) {
+    posts.forEach((post) => {
+      const newPost = buildBlog(post);
+      blogsList.append(newPost);
+    });
+  } else {
+    blogsList.innerHTML = `<h2 class="text-center text-gray-500 py-6 text-lg">No blogs matching your search!</h2>`;
   }
 }
 
-function searchBlogs() {
-  searchInput.oninput = (e) => {
-    e.preventDefault();
-    const key = e.target.value;
+async function fetchBlogs(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+}
 
-    (async () => {
-      const url = `${baseApi}/posts/search/?q=${key}`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new error(`Response status: ${response.status}`);
-        }
-        const result = await response.json();
-        blogsList.innerHTML = "";
-        renderBlogs(result.posts);
-      } catch (error) {
-        console.error(error.message);
-      }
-    })();
+async function getBlogs(order = "desc") {
+  const url = `${baseApi}/posts?sortBy=id&order=${order}`;
+  const data = await fetchBlogs(url);
+  if (data.posts) renderBlogs(data.posts);
+}
+
+function searchBlogs() {
+  searchInput.oninput = async (e) => {
+    const key = e.target.value.trim();
+
+    if (!key) return getBlogs("desc");
+
+    const url = `${baseApi}/posts/search/?q=${key}`;
+    const data = await fetchBlogs(url);
+    if (data.posts) renderBlogs(data.posts);
   };
 }
 
 function sortBlogs() {
-  ascBtn.onclick = () => {
+  ascBtn.addEventListener("click", () => {
     descBtn.classList.remove("active");
     ascBtn.classList.add("active");
+    getBlogs("asc");
+  });
 
-    (async () => {
-      const url = `${baseApi}/posts?sortBy=id&order=asc`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new error(`Response status: ${response.status}`);
-        }
-        const result = await response.json();
-        blogsList.innerHTML = "";
-        renderBlogs(result.posts);
-      } catch (error) {
-        console.error(error.message);
-      }
-    })();
-  };
-
-  descBtn.onclick = () => {
+  descBtn.addEventListener("click", () => {
     ascBtn.classList.remove("active");
     descBtn.classList.add("active");
-
-    (async () => {
-      const url = `${baseApi}/posts?sortBy=id&order=desc`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new error(`Response status: ${response.status}`);
-        }
-        const result = await response.json();
-        blogsList.innerHTML = "";
-        renderBlogs(result.posts);
-      } catch (error) {
-        console.error(error.message);
-      }
-    })();
-  };
+    getBlogs("desc");
+  });
 }
+
+function openModal() {
+  modal.classList.add("show");
+  document.body.classList.add("no-scroll");
+}
+
+function closeModal() {
+  modal.classList.remove("show");
+  document.body.classList.remove("no-scroll");
+}
+
+modalCloseBtn.addEventListener("click", closeModal);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
+document.onkeydown = (e) => {
+  if (e.key === "Escape") closeModal();
+};
 
 getBlogs();
 searchBlogs();

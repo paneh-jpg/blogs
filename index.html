@@ -64,6 +64,10 @@
         background-color: yellow;
       }
 
+      .no-scroll {
+        overflow: hidden;
+      }
+
       #modal {
         opacity: 0;
         visibility: hidden;
@@ -179,25 +183,18 @@
     </div>
     <div
       id="modal"
-      class="fixed show inset-0 bg-[#0009] flex items-center justify-center"
+      class="fixed inset-0 bg-[#0009] flex items-center justify-center"
     >
-      <div id="modal-container" class="container bg-[#FFF] rounded-sm p-4">
+      <div id="modal-container" class="container bg-[#FFF] rounded-sm p-6">
         <button
           class="close-modal absolute cursor-pointer flex items-center justify-center top-[10px] right-[10px] w-[25px] h-[25px] rounded-[50%] bg-[#ebebeb] hover:bg-[#333] hover:text-[#FFF]"
         >
           <span class="text-xl -mt-1 font-semibold">&times;</span>
         </button>
         <div id="modal-content">
-          <h2 class="text-2xl font-semibold">
-            Lorem ipsum dolor sit amet consectetur adipisicing.
-          </h2>
+          <h2 class="text-2xl font-semibold"></h2>
           <div class="w-full h-[1px] bg-[#ebebeb] my-2"></div>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro
-            magni, harum delectus nemo sapiente ex natus earum, quae sequi
-            obcaecati soluta esse, odit cupiditate totam a dicta voluptatem
-            dolores iure.
-          </p>
+          <p></p>
         </div>
         <div class="modal-footer"></div>
       </div>
