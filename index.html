@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <!-- CND TailWind CSS  -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+      @layer components {
+        .pagination {
+          @apply border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
+        }
+      }
+
+      .container {
+        width: 100%;
+      }
+      @media (min-width: 640px) {
+        .container {
+          max-width: 640px;
+        }
+      }
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 1024px;
+        }
+      }
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 1280px;
+        }
+      }
+      @media (min-width: 1536px) {
+        .container {
+          max-width: 1200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container m-auto">
+      <!-- Header  -->
+      <header>
+        <h1 class="mt-5 text-center font-bold text-4xl">Blogs</h1>
+      </header>
+
+      <!-- Body  -->
+      <main>
+        <!-- Search Form -->
+        <div>
+          <form action="">
+            <input
+              class="border border-[#ebebeb] outline-none focus:border-[#d1cccc] w-full mt-3 p-3 text-[16px]"
+              type="text"
+              name=""
+              placeholder="Search..."
+              id="search-input"
+            />
+          </form>
+
+          <!-- Action  -->
+          <div class="mt-3">
+            <button
+              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+            >
+              Thêm mới
+            </button>
+          </div>
+
+          <!-- Action  -->
+          <div class="mt-2">
+            <button
+              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+            >
+              Mới nhất
+            </button>
+            <button
+              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1 ml-1"
+            >
+              Cũ nhất
+            </button>
+          </div>
+
+          <!-- Blogs List  -->
+          <ul class="mt-3">
+            <li class="border mb-3 border-[#ebebeb] p-3">
+              <h2 class="font-semibold text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </h2>
+              <p class="mt-2 font-normal">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                quod iste exercitationem ipsa provident explicabo voluptatum
+                quasi consequatur laborum nobis assumenda ut autem facere quam
+                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
+                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
+                possimus cupiditate soluta alias nulla. Magnam, porro in!
+              </p>
+
+              <div class="mt-3 flex justify-between">
+                <button
+                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
+                >
+                  Xem chi tiết
+                </button>
+                <div>
+                  <button class="font-semibold">Sửa</button>
+                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
+                </div>
+              </div>
+            </li>
+
+            <li class="border mb-3 border-[#ebebeb] p-3">
+              <h2 class="font-semibold text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </h2>
+              <p class="mt-2 font-normal">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                quod iste exercitationem ipsa provident explicabo voluptatum
+                quasi consequatur laborum nobis assumenda ut autem facere quam
+                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
+                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
+                possimus cupiditate soluta alias nulla. Magnam, porro in!
+              </p>
+
+              <div class="mt-3 flex justify-between">
+                <button
+                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
+                >
+                  Xem chi tiết
+                </button>
+                <div>
+                  <button class="font-semibold">Sửa</button>
+                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
+                </div>
+              </div>
+            </li>
+
+            <li class="border mb-3 border-[#ebebeb] p-3">
+              <h2 class="font-semibold text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </h2>
+              <p class="mt-2 font-normal">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                quod iste exercitationem ipsa provident explicabo voluptatum
+                quasi consequatur laborum nobis assumenda ut autem facere quam
+                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
+                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
+                possimus cupiditate soluta alias nulla. Magnam, porro in!
+              </p>
+
+              <div class="mt-3 flex justify-between">
+                <button
+                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
+                >
+                  Xem chi tiết
+                </button>
+                <div>
+                  <button class="font-semibold">Sửa</button>
+                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
+                </div>
+              </div>
+            </li>
+
+            <li class="border mb-3 border-[#ebebeb] p-3">
+              <h2 class="font-semibold text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </h2>
+              <p class="mt-2 font-normal">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                quod iste exercitationem ipsa provident explicabo voluptatum
+                quasi consequatur laborum nobis assumenda ut autem facere quam
+                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
+                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
+                possimus cupiditate soluta alias nulla. Magnam, porro in!
+              </p>
+
+              <div class="mt-3 flex justify-between">
+                <button
+                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
+                >
+                  Xem chi tiết
+                </button>
+                <div>
+                  <button class="cursor-pointer font-semibold">Sửa</button>
+                  <button
+                    class="cursor-pointer font-semibold text-red-400 mx-1"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            </li>
+
+            <li class="border mb-3 border-[#ebebeb] p-3">
+              <h2 class="font-semibold text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </h2>
+              <p class="mt-2 font-normal">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                quod iste exercitationem ipsa provident explicabo voluptatum
+                quasi consequatur laborum nobis assumenda ut autem facere quam
+                fugit alias et doloremque, voluptatem obcaecati repudiandae aut?
+                Praesentium, ipsam, ut unde quam impedit fuga, culpa quis
+                possimus cupiditate soluta alias nulla. Magnam, porro in!
+              </p>
+
+              <div class="mt-3 flex justify-between">
+                <button
+                  class="cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-400 font-semibold"
+                >
+                  Xem chi tiết
+                </button>
+                <div>
+                  <button class="font-semibold">Sửa</button>
+                  <button class="font-semibold text-red-400 mx-1">Xóa</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </main>
+
+      <!-- Pagination  -->
+      <footer class="my-4 flex flex-wrap">
+        <div class="pagination">1</div>
+        <div class="pagination">2</div>
+        <div class="pagination">3</div>
+        <div class="pagination">4</div>
+        <div class="pagination">5</div>
+        <div class="pagination">6</div>
+        <div class="pagination">7</div>
+        <div class="pagination">8</div>
+        <div class="pagination">9</div>
+        <div class="pagination">10</div>
+        <div class="pagination">11</div>
+        <div class="pagination">12</div>
+        <div class="pagination">13</div>
+        <div class="pagination">14</div>
+        <div class="pagination">15</div>
+        <div class="pagination">16</div>
+        <div class="pagination">17</div>
+        <div class="pagination">18</div>
+        <div class="pagination">19</div>
+        <div class="pagination">20</div>
+        <div class="pagination">21</div>
+        <div class="pagination">22</div>
+        <div class="pagination">23</div>
+        <div class="pagination">24</div>
+        <div class="pagination">25</div>
+        <div class="pagination">26</div>
+        <div class="pagination">27</div>
+        <div class="pagination">28</div>
+        <div class="pagination">29</div>
+        <div class="pagination">30</div>
+        <div class="pagination">31</div>
+        <div class="pagination">32</div>
+        <div class="pagination">33</div>
+        <div class="pagination">34</div>
+        <div class="pagination">35</div>
+        <div class="pagination">36</div>
+      </footer>
+    </div>
+  </body>
+</html>
