@@ -11,7 +11,7 @@
     <style type="text/tailwindcss">
       @layer components {
         .pagination {
-          @apply cursor-pointer hover:bg-green-300 border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
+          @apply select-none cursor-pointer hover:bg-green-300 border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
         }
 
         .blog {
@@ -19,24 +19,25 @@
         }
 
         .view-all-btn {
-          @apply cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-500 active:scale-90 transition-transform hover:bg-green-400 hover:text-[#FFF] font-semibold;
+          @apply select-none cursor-pointer border border-[#ebebeb] px-3 py-1.5 rounded-[99px] active:bg-green-500 active:scale-90  hover:bg-green-400 hover:text-[#FFF] transition-all duration-300
+ font-semibold;
         }
 
         .edit-btn {
-          @apply cursor-pointer font-semibold mr-2;
+          @apply select-none cursor-pointer font-semibold mr-2;
         }
 
         .delete-btn {
-          @apply cursor-pointer font-semibold text-red-400 mx-1;
+          @apply select-none cursor-pointer font-semibold text-red-400 mx-1;
         }
       }
 
       .container {
-        width: 100%;
+        width: calc(100% - 30px);
       }
       @media (min-width: 640px) {
         .container {
-          max-width: 640px;
+          max-width: 610px;
         }
       }
       @media (min-width: 768px) {
@@ -121,7 +122,7 @@
           <!-- Action  -->
           <div class="mt-3">
             <button
-              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+              class="select-none transition-all duration-100 cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
             >
               Thêm mới
             </button>
@@ -131,13 +132,13 @@
           <div class="mt-2">
             <button
               id="desc-btn"
-              class="active cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+              class="select-none transition-all duration-100 active cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
             >
               Mới nhất
             </button>
             <button
               id="asc-btn"
-              class="cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1 ml-1"
+              class="select-none transition-all duration-100 cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1 ml-1"
             >
               Cũ nhất
             </button>
@@ -203,6 +204,11 @@
           <div class="w-full h-[1px] bg-[#ebebeb] my-2"></div>
           <p></p>
         </div>
+        <div id="modal-extra" class="mt-3 space-y-2 text-[15px] text-[#333]">
+          <p><b>Tags:</b> <span id="modal-tags"></span></p>
+          <p><b>Author:</b> <span id="modal-user"></span></p>
+        </div>
+
         <div class="modal-footer"></div>
       </div>
     </div>

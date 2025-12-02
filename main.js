@@ -7,6 +7,9 @@ const modal = document.querySelector("#modal");
 const modalTitle = document.querySelector("#modal-content h2");
 const modalBody = document.querySelector("#modal-content p");
 const modalCloseBtn = document.querySelector(".close-modal");
+const modalTags = document.querySelector("#modal-tags");
+
+const modalUser = document.querySelector("#modal-user");
 
 const baseApi = "https://dummyjson.com";
 let isFirstClick = true;
@@ -44,6 +47,9 @@ async function loadBlogDetail(id) {
   const url = `${baseApi}/posts/${id}`;
   const data = await fetchBlogs(url);
 
+  const user = await fetchUser(data.userId);
+  const fullName = `${user.firstName} ${user.lastName}`;
+
   if (!data) return;
   if (isFirstClick) {
     isFirstClick = false;
@@ -51,11 +57,23 @@ async function loadBlogDetail(id) {
     setTimeout(() => {
       modalTitle.textContent = data.title;
       modalBody.textContent = data.body;
+
+      modalTags.textContent = data.tags.join(", ");
+      modalUser.textContent = fullName;
     }, 1000);
   } else {
     modalTitle.textContent = data.title;
     modalBody.textContent = data.body;
+
+    modalTags.textContent = data.tags.join(", ");
+    modalUser.textContent = fullName;
   }
+}
+
+async function fetchUser(id) {
+  const url = `https://dummyjson.com/users/${id}`;
+  const data = await fetchBlogs(url);
+  return data;
 }
 
 function clearBlogs() {
