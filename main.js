@@ -11,8 +11,7 @@ const modalTags = document.querySelector("#modal-tags");
 
 const modalUser = document.querySelector("#modal-user");
 
-const baseApi = "https://dummyjson.com";
-let isFirstClick = true;
+const BASE_API = "https://dummyjson.com";
 
 function buildBlog(post) {
   const li = document.createElement("li");
@@ -40,34 +39,28 @@ function showModalLoading() {
   modalBody.textContent = "Đang tải dữ liệu bài viết...";
 }
 
+function showBlogsLoading() {
+  blogsList.innerHTML = `<h2 class="text-left text-gray-800 py-3 text-lg">Loading...</h2>`;
+}
+
 async function loadBlogDetail(id) {
   openModal();
   showModalLoading();
 
-  const url = `${baseApi}/posts/${id}`;
+  const url = `${BASE_API}/posts/${id}`;
   const data = await fetchBlogs(url);
 
   const user = await fetchUser(data.userId);
   const fullName = `${user.firstName} ${user.lastName}`;
 
   if (!data) return;
-  if (isFirstClick) {
-    isFirstClick = false;
-
-    setTimeout(() => {
-      modalTitle.textContent = data.title;
-      modalBody.textContent = data.body;
-
-      modalTags.textContent = data.tags.join(", ");
-      modalUser.textContent = fullName;
-    }, 1000);
-  } else {
+  setTimeout(() => {
     modalTitle.textContent = data.title;
     modalBody.textContent = data.body;
 
     modalTags.textContent = data.tags.join(", ");
     modalUser.textContent = fullName;
-  }
+  }, 200);
 }
 
 async function fetchUser(id) {
@@ -104,7 +97,9 @@ async function fetchBlogs(url) {
 }
 
 async function getBlogs(order = "desc") {
-  const url = `${baseApi}/posts?sortBy=id&order=${order}`;
+  showBlogsLoading();
+
+  const url = `${BASE_API}/posts?sortBy=id&order=${order}`;
   const data = await fetchBlogs(url);
   if (data.posts) renderBlogs(data.posts);
 }
@@ -115,7 +110,7 @@ function searchBlogs() {
 
     if (!key) return getBlogs("desc");
 
-    const url = `${baseApi}/posts/search/?q=${key}`;
+    const url = `${BASE_API}/posts/search/?q=${key}`;
     const data = await fetchBlogs(url);
     if (data.posts) renderBlogs(data.posts);
   };
@@ -123,6 +118,7 @@ function searchBlogs() {
 
 function sortBlogs() {
   ascBtn.addEventListener("click", () => {
+    showBlogsLoading();
     searchInput.value = "";
     descBtn.classList.remove("active");
     ascBtn.classList.add("active");
@@ -130,6 +126,7 @@ function sortBlogs() {
   });
 
   descBtn.addEventListener("click", () => {
+    showBlogsLoading();
     searchInput.value = "";
     ascBtn.classList.remove("active");
     descBtn.classList.add("active");
