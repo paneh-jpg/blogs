@@ -1,176 +1,156 @@
-const blogsList = document.querySelector("#blogs-list");
-const searchInput = document.querySelector("#search-input");
-const descBtn = document.querySelector("#desc-btn");
-const ascBtn = document.querySelector("#asc-btn");
+const BASE_URL = "https://dummyjson.com";
 
-const modal = document.querySelector("#modal");
-const modalTitle = document.querySelector("#modal-content h2");
-const modalBody = document.querySelector("#modal-content p");
-const modalCloseBtn = document.querySelector(".close-modal");
-const modalTags = document.querySelector("#modal-tags");
+const app = {
+  _query: {
+    order: "desc",
+    limit: 10,
+    page: 1,
+    total: 1,
+  },
+  init() {
+    this.getPosts();
+    this.search();
+    this.sort();
+    this.paginate();
+  },
 
-const modalUser = document.querySelector("#modal-user");
+  async getPosts() {
+    try {
+      this.renderLoading();
+      const skip = (this._query.page - 1) * this._query.limit;
+      let url = `${BASE_URL}/posts?sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
+      if (this._query.q) {
+        url = `${BASE_URL}/posts/search?q=${this._query.q}&sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
+      }
 
-const BASE_API = "https://dummyjson.com";
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Fail to fetch /posts");
+      }
+      const data = await response.json();
+      const pageNumber = Math.ceil(data.total / this._query.limit);
+      this.renderPaginate(pageNumber);
 
-function buildBlog(post) {
-  const li = document.createElement("li");
-  li.className = "blog";
+      if (data.posts.length === 0) {
+        const postListEl = document.querySelector("#js-post-list");
+        postListEl.innerHTML = `<h2 class="text-center text-gray-800 py-3 text-lg">No blogs matching your search!</h2>`;
+        return;
+      }
 
-  li.innerHTML = `    <h2 class="font-semibold text-2xl">${post.title}</h2>
-    <p class="blog-desc mt-2 font-normal">${post.body}</p>
-    <div class="mt-3 flex justify-between">
-      <button class="view-all-btn">Xem chi tiết</button>
-      <div>
-        <button class="edit-btn">Sửa</button>
-        <button class="delete-btn">Xóa</button>
-      </div>
-    </div>`;
+      this.renderPosts(data.posts);
+    } catch (error) {
+      this.renderError(error.message);
+    } finally {
+      this.renderLoading(false);
+    }
+  },
 
-  li.querySelector(".view-all-btn").addEventListener("click", () => {
-    loadBlogDetail(post.id);
-  });
+  renderPaginate(pageNumber) {
+    const paginateListEl = document.querySelector(".paginate");
+    paginateListEl.innerHTML = "";
+    for (let page = 1; page <= pageNumber; page++) {
+      const active =
+        this._query.page === page ? "bg-green-600 text-[#FFF]" : "";
+      paginateListEl.innerHTML += `<button class="js-paginate pagination ${active}">${page}</button>`;
+    }
+  },
 
-  return li;
-}
+  renderError(error) {
+    const errorEl = document.querySelector(".js-loading-error");
+    errorEl.innerHTML = `<h2 class="text-left text-gray-800 pt-4 pb-2 text-lg">${error}</h2>`;
+  },
 
-function showModalLoading() {
-  modalTitle.textContent = "Loading...";
-  modalBody.textContent = "Đang tải dữ liệu bài viết...";
-}
+  renderLoading(status = true) {
+    const errorEl = document.querySelector(".js-loading-error");
+    errorEl.innerHTML = status
+      ? `<h2 class="text-left text-gray-800 pt-4 pb-2 text-lg">Loading ...</h2>`
+      : "";
+  },
 
-function showBlogsLoading() {
-  blogsList.innerHTML = `<h2 class="text-left text-gray-800 py-3 text-lg">Loading...</h2>`;
-}
+  renderPosts(posts) {
+    const postListEl = document.querySelector("#js-post-list");
+    postListEl.innerHTML = posts
+      .map((post) => {
+        return `     <div class="blog">
+              <h2 class="font-semibold text-2xl">${this.escapeHTML(
+                post.title
+              )}</h2>
+              <p class="blog-desc mt-2 font-normal">${this.escapeHTML(
+                post.body
+              )}</p>
+              <div class="mt-3 flex justify-between">
+                <button class="view-all-btn">Xem chi tiết</button>
+                <div>
+                  <button class="edit-btn">Sửa</button>
+                  <button class="delete-btn">Xóa</button>
+                </div>
+              </div>
+            </div>`;
+      })
+      .join("");
+  },
 
-async function loadBlogDetail(id) {
-  openModal();
-  showModalLoading();
+  escapeHTML(text) {
+    return text
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  },
 
-  const url = `${BASE_API}/posts/${id}`;
-  const data = await fetchBlogs(url);
+  search() {
+    const inputEL = document.querySelector("#js-search-input");
+    inputEL.addEventListener(
+      "input",
+      this.debounce((e) => {
+        const keyword = e.target.value;
+        this._query.q = keyword;
+        this._query.page = 1;
+        this.getPosts();
+      })
+    );
+  },
 
-  const user = await fetchUser(data.userId);
-  const fullName = `${user.firstName} ${user.lastName}`;
+  debounce(callback, timeout = 500) {
+    let id;
+    return (...args) => {
+      if (id) {
+        clearTimeout(id);
+      }
 
-  if (!data) return;
-  setTimeout(() => {
-    modalTitle.textContent = data.title;
-    modalBody.textContent = data.body;
+      id = setTimeout(() => {
+        callback.apply(this, args);
+      }, timeout);
+    };
+  },
 
-    modalTags.textContent = data.tags.join(", ");
-    modalUser.textContent = fullName;
-  }, 200);
-}
+  sort() {
+    const btnList = document.querySelectorAll(".js-sort-btn");
+    btnList.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const sortValue = btn.dataset.sort;
+        const btnActive = document.querySelector(".sort-active");
 
-async function fetchUser(id) {
-  const url = `https://dummyjson.com/users/${id}`;
-  const data = await fetchBlogs(url);
-  return data;
-}
+        if (btnActive) {
+          btnActive.classList.remove("sort-active");
+        }
 
-function clearBlogs() {
-  blogsList.innerHTML = "";
-}
-
-function renderBlogs(posts) {
-  clearBlogs();
-  if (posts.length > 0) {
-    posts.forEach((post) => {
-      const newPost = buildBlog(post);
-      blogsList.append(newPost);
+        btn.classList.add("sort-active");
+        this._query.order = sortValue;
+        this.getPosts();
+      });
     });
-  } else {
-    blogsList.innerHTML = `<h2 class="text-center text-gray-500 py-6 text-lg">No blogs matching your search!</h2>`;
-  }
-}
+  },
 
-async function fetchBlogs(url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Response status: ${response.status}`);
-    return await response.json();
-  } catch (error) {
-    console.log(error.message);
-    return null;
-  }
-}
+  paginate() {
+    const paginateEl = document.querySelector(".paginate");
 
-async function getBlogs(order = "desc") {
-  showBlogsLoading();
+    paginateEl.onclick = (e) => {
+      const page = +e.target.innerText;
 
-  const url = `${BASE_API}/posts?sortBy=id&order=${order}`;
-  const data = await fetchBlogs(url);
-  if (data.posts) renderBlogs(data.posts);
-}
-
-function searchBlogs() {
-  searchInput.oninput = async (e) => {
-    const key = e.target.value.trim();
-
-    if (!key) return getBlogs("desc");
-
-    const url = `${BASE_API}/posts/search/?q=${key}`;
-    const data = await fetchBlogs(url);
-    if (data.posts) renderBlogs(data.posts);
-  };
-}
-
-function sortBlogs() {
-  ascBtn.addEventListener("click", () => {
-    showBlogsLoading();
-    searchInput.value = "";
-    descBtn.classList.remove("active");
-    ascBtn.classList.add("active");
-    getBlogs("asc");
-  });
-
-  descBtn.addEventListener("click", () => {
-    showBlogsLoading();
-    searchInput.value = "";
-    ascBtn.classList.remove("active");
-    descBtn.classList.add("active");
-    getBlogs("desc");
-  });
-}
-
-function getScrollbarWidth() {
-  const box = document.createElement("div");
-
-  Object.assign(box.style, {
-    position: "absolute",
-    top: "-9999px",
-    overflow: "scroll",
-  });
-
-  document.body.append(box);
-
-  const scrollbarWidth = box.offsetWidth - box.clientWidth;
-  return scrollbarWidth;
-}
-
-function openModal() {
-  modal.classList.add("show");
-  document.body.classList.add("no-scroll");
-  document.body.style.paddingRight = getScrollbarWidth() + "px";
-}
-
-function closeModal() {
-  modal.classList.remove("show");
-  document.body.classList.remove("no-scroll");
-  document.body.style.paddingRight = "";
-}
-
-modalCloseBtn.addEventListener("click", closeModal);
-
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) closeModal();
-});
-
-document.onkeydown = (e) => {
-  if (e.key === "Escape") closeModal();
+      this._query.page = page;
+      this.getPosts();
+    };
+  },
 };
 
-getBlogs();
-searchBlogs();
-sortBlogs();
+app.init();
