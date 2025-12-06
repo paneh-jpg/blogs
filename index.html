@@ -126,7 +126,7 @@
           <!-- Action  -->
           <div class="mt-3">
             <button
-              class="select-none transition-all duration-100 cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
+              class="js-add-post select-none transition-all duration-100 cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
             >
               Thêm mới
             </button>
@@ -163,6 +163,8 @@
       id="modal"
       class="js-modal fixed inset-0 bg-[#0009] flex items-center justify-center"
     >
+      <div class="js-modal-loading hidden text-center py-4">Loading...</div>
+
       <div
         id="modal-container"
         class="w-[calc(100%-100px)] md:w-[calc(100%-200px)] bg-[#FFF] rounded-sm p-6"
