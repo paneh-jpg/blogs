@@ -206,9 +206,12 @@ const app = {
     const extraEl = document.querySelector("#modal-extra");
 
     extraEl.innerHTML = "";
-    closeModalBtn.onclick = () => {
-      modal.classList.remove("show");
-    };
+    if (closeModalBtn && !closeModalBtn.dataset.bound) {
+      closeModalBtn.onclick = () => {
+        modal.classList.remove("show");
+      };
+      closeModalBtn.dataset.bound = "true";
+    }
     modal.classList.remove("show");
   },
 
