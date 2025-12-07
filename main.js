@@ -193,6 +193,7 @@ const app = {
       extraEl.innerHTML = "";
       this.open();
       titleEl.innerHTML = "Loading...";
+      bodyEl.innerHTML = "Blog is loading...";
       try {
         const data = await this.getSinglePost(id);
 
@@ -343,11 +344,10 @@ const app = {
 
       titleEl.innerHTML = "Edit Blog";
       bodyEl.innerHTML = "";
-      extraEl.innerHTML = "Loading...";
+      extraEl.textContent = "Loading...";
       try {
-        extraEl.innerHTML = "";
         const oldData = await this.getSinglePost(id);
-
+        extraEl.innerHTML = "";
         const form = this.renderForm(
           oldData.title,
           oldData.body,
@@ -356,11 +356,12 @@ const app = {
               await this.updatePost(id, newData);
               this.close();
 
-              const titleInList = post.querySelector("h2");
-              const bodyInList = post.querySelector(".blog-desc");
-
-              titleInList.textContent = this.sanitizeText(newData.title);
-              bodyInList.textContent = this.sanitizeText(newData.body);
+              post.querySelector("h2").textContent = this.sanitizeText(
+                newData.title
+              );
+              post.querySelector(".blog-desc").textContent = this.sanitizeText(
+                newData.body
+              );
             } catch (error) {
               this.renderError("#modal-extra", error.message);
             }
@@ -468,22 +469,30 @@ const app = {
 
   open() {
     const modalEl = document.querySelector(".js-modal");
+    document.body.style.paddingRight = "16px";
+    document.body.classList.add("no-scroll");
     modalEl.classList.add("show");
   },
 
   close() {
     const modalEl = document.querySelector(".js-modal");
     const closeModalEl = document.querySelector(".js-close-modal");
-    closeModalEl.onclick = () => {
-      modalEl.classList.remove("show");
-    };
+
+    closeModalEl.addEventListener("click", () => {
+      this.closeModal();
+    });
 
     modalEl.addEventListener("click", (e) => {
       if (e.target === modalEl) {
-        modalEl.classList.remove("show");
+        this.closeModal();
       }
     });
+  },
 
+  closeModal() {
+    const modalEl = document.querySelector(".js-modal");
+    document.body.style.paddingRight = "";
+    document.body.classList.remove("no-scroll");
     modalEl.classList.remove("show");
   },
 };
