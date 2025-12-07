@@ -201,6 +201,8 @@ const app = {
         bodyEl.innerHTML = this.sanitizeText(data.body);
       } catch (error) {
         this.renderError(".js-modal-content h2", error.message);
+        bodyEl.innerHTML =
+          "Can't load this blog. Contact admin for more information.";
       }
     });
   },
@@ -370,6 +372,8 @@ const app = {
         extraEl.append(form);
       } catch (error) {
         this.renderError(".js-modal-content h2", error.message);
+        extraEl.textContent =
+          "Fail to load blog, so you can't edit. Contact admin for more information.";
       }
     });
   },
