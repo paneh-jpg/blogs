@@ -1,4 +1,4 @@
-const BASE_URL = "https://dummyjson.com";
+const BASE_URL = "https://dummyjson.com/";
 
 const app = {
   _query: {
@@ -16,44 +16,46 @@ const app = {
     this.renderSinglePost();
     this.addPost();
     this.editPost();
+    this.removePost();
     this.close();
-    this.deletePostUI();
   },
 
   async getPosts() {
     try {
-      this.renderLoading();
+      this.renderLoading(".js-loading");
       const skip = (this._query.page - 1) * this._query.limit;
-      let url = `${BASE_URL}/posts?sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
+      let url = `${BASE_URL}posts?sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
       if (this._query.q) {
-        url = `${BASE_URL}/posts/search?q=${this._query.q}&sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
+        url = `${BASE_URL}posts/search?q=${this._query.q}&sortBy=id&order=${this._query.order}&limit=${this._query.limit}&skip=${skip}`;
       }
       const response = await fetch(url);
+
       if (!response.ok) {
         throw new Error(`Fail to fetch ${url}`);
       }
       const data = await response.json();
-      const pageNumber = Math.ceil(data.total / this._query.limit);
-
       this.renderPosts(data.posts);
+      const pageNumber = Math.ceil(data.total / this._query.limit);
       this.renderPaginate(pageNumber);
     } catch (error) {
-      this.renderError(error.message);
+      this.renderError(".js-error", error.message);
     } finally {
-      this.renderLoading(false);
+      this.renderLoading(".js-loading", false);
     }
   },
 
   renderPosts(posts) {
-    const postsListEl = document.querySelector(".js-post-list");
+    const postListEl = document.querySelector(".js-post-list");
     if (posts.length === 0) {
-      postsListEl.innerHTML = `<h2 class="text-left text-gray-800 pt-4 pb-2 text-lg">No blog matching your search.</h2>`;
+      postListEl.classList.add("notification");
+      postListEl.innerHTML = "No blog matching your search!";
       return;
     }
-    postsListEl.innerHTML = posts
-      .map((post) => {
-        return `    <div class="post" data-id = ${post.id}>
-              <h2 class="font-semibold text-2xl">${this.sanitizeText(
+    postListEl.classList.remove("notification");
+    postListEl.innerHTML = posts
+      .map(
+        (post) => `<div class="post" data-id = ${post.id}>
+              <h2 class="font-semibold text-lg sm:text-xl md:text-2xl">${this.sanitizeText(
                 post.title
               )}</h2>
               <p class="blog-desc mt-2 font-normal">${this.sanitizeText(
@@ -62,29 +64,18 @@ const app = {
               <div class="mt-3 flex justify-between">
                 <button class="js-view-all-btn">Xem chi tiết</button>
                 <div>
-                  <button class="js-edit-btn">Sửa</button>
-                  <button class="js-delete-btn">Xóa</button>
+                  <button class="js-edit-btn "><i class="fa-solid fa-pen text-[11px] mr-0"></i> Sửa</button>
+                  <button class="js-delete-btn "><i class="fa-solid fa-trash text-[13px] mr-1"></i>Xóa</button>
                 </div>
               </div>
-            </div>`;
-      })
+            </div>`
+      )
       .join("");
-  },
-
-  renderError(error) {
-    const errorEl = document.querySelector(".js-error");
-    errorEl.innerHTML = `<h2 class="text-left text-gray-800 pt-4 pb-2 text-lg">${error}</h2>`;
-  },
-
-  renderLoading(status = true) {
-    const loadingEl = document.querySelector(".js-loading");
-    loadingEl.innerHTML = status
-      ? `<h2 class="text-left text-gray-800 pt-4 pb-2 text-lg">Loading...</h2>`
-      : "";
   },
 
   renderPaginate(pageNumber) {
     const paginateListEl = document.querySelector(".js-paginate");
+
     paginateListEl.innerHTML = "";
     for (let page = 1; page <= pageNumber; page++) {
       paginateListEl.innerHTML += `<button class="pagination ${
@@ -93,17 +84,34 @@ const app = {
     }
   },
 
+  renderLoading(element, status = true) {
+    const loadingEl = document.querySelector(element);
+    if (status) {
+      loadingEl.textContent = "Loading...";
+      loadingEl.classList.add("notification");
+    } else {
+      loadingEl.textContent = "";
+      loadingEl.classList.remove("notification");
+    }
+  },
+
+  renderError(element, error) {
+    const errorEl = document.querySelector(element);
+    // errorEl.classList.add("notification");
+    errorEl.textContent = error;
+  },
+
   sanitizeText(text) {
-    return text.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    return DOMPurify.sanitize(text);
   },
 
   search() {
     const inputSearchEl = document.querySelector(".js-search-input");
+
     inputSearchEl.addEventListener(
       "input",
       this.debounce((e) => {
-        const key = e.target.value;
-        this._query.q = key;
+        this._query.q = e.target.value;
         this.getPosts();
       })
     );
@@ -125,19 +133,18 @@ const app = {
   sort() {
     const btnSort = document.querySelectorAll(".js-sort-btn");
     btnSort.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        this._query.page = 1;
+      btn.onclick = () => {
         const sortValue = btn.dataset.sort;
-        const btnActive = document.querySelector(".sort-active");
+        const activeBtn = document.querySelector(".sort-active");
 
-        if (btnActive) {
-          btnActive.classList.remove("sort-active");
+        if (activeBtn) {
+          activeBtn.classList.remove("sort-active");
         }
 
         btn.classList.add("sort-active");
         this._query.order = sortValue;
         this.getPosts();
-      });
+      };
     });
   },
 
@@ -156,66 +163,43 @@ const app = {
   },
 
   async getSinglePost(id) {
-    const url = `${BASE_URL}/posts/${id}`;
+    const url = `${BASE_URL}posts/${id}`;
     const response = await fetch(url);
+
     if (!response.ok) {
-      throw new Error(`Fail to fetch /posts/${id}`);
+      throw new Error(`Fail to fetch ${url}`);
     }
 
     return await response.json();
   },
 
   renderSinglePost() {
-    const postsListEl = document.querySelector(".js-post-list");
-
+    const postListEl = document.querySelector(".js-post-list");
     const titleEl = document.querySelector(".js-modal-content h2");
     const bodyEl = document.querySelector(".js-modal-content p");
+    const extraEl = document.querySelector("#modal-extra");
 
-    postsListEl.addEventListener("click", async (e) => {
+    postListEl.addEventListener("click", async (e) => {
       const viewAllBtn = e.target.closest(".js-view-all-btn");
       if (!viewAllBtn) return;
 
       const post = viewAllBtn.closest(".post");
       const id = post.dataset.id;
-
+      extraEl.innerHTML = "";
       this.open();
-
       titleEl.innerHTML = "Loading...";
-      bodyEl.innerHTML = "";
-
       try {
         const data = await this.getSinglePost(id);
+
         titleEl.innerHTML = this.sanitizeText(data.title);
         bodyEl.innerHTML = this.sanitizeText(data.body);
       } catch (error) {
-        console.log(error);
-        titleEl.innerHTML = "Error";
-        bodyEl.innerHTML = "Không thể tải bài viết.";
+        this.renderError(".js-modal-content h2", error.message);
       }
     });
   },
 
-  open() {
-    const modal = document.querySelector(".js-modal");
-    modal.classList.add("show");
-  },
-
-  close() {
-    const modal = document.querySelector(".js-modal");
-    const closeModalBtn = document.querySelector(".js-close-modal");
-    const extraEl = document.querySelector("#modal-extra");
-
-    extraEl.innerHTML = "";
-    if (closeModalBtn && !closeModalBtn.dataset.bound) {
-      closeModalBtn.onclick = () => {
-        modal.classList.remove("show");
-      };
-      closeModalBtn.dataset.bound = "true";
-    }
-    modal.classList.remove("show");
-  },
-
-  buildForm(defaultTitle = "", defaultBody = "", onSubmit) {
+  renderForm(defaultTitle = "", defaultBody = "", onSubmit) {
     const form = document.createElement("div");
     form.className = "flex flex-col gap-3 p-3";
 
@@ -233,16 +217,27 @@ const app = {
     bodyTextarea.className =
       "border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring focus:border-blue-400";
 
+    const errorEl = document.createElement("p");
+    errorEl.className = "text-red-500";
+
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "Save";
     saveBtn.className =
       "w-[100px] cursor-pointer bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800";
 
     saveBtn.onclick = () => {
-      const newData = {
-        title: titleInput.value.trim(),
-        body: bodyTextarea.value.trim(),
-      };
+      const title = titleInput.value.trim();
+      const body = bodyTextarea.value.trim();
+
+      if (!title || !body) {
+        errorEl.innerHTML = "Title and Content cannot be empty";
+        if (!form.contains(errorEl)) {
+          form.insertBefore(errorEl, saveBtn);
+        }
+        return;
+      }
+
+      const newData = { title, body };
       if (onSubmit) onSubmit(newData);
     };
 
@@ -251,12 +246,13 @@ const app = {
   },
 
   async createPost(data) {
-    const response = await fetch(`${BASE_URL}/posts/add`, {
+    const url = `${BASE_URL}posts/add`;
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...data,
-        userId: 1,
+        userId: 5,
       }),
     });
 
@@ -275,22 +271,19 @@ const app = {
     const extraEl = document.querySelector("#modal-extra");
 
     addBtn.addEventListener("click", () => {
+      extraEl.innerHTML = "";
       this.open();
-
       titleEl.innerHTML = "Add new Blog";
       bodyEl.innerHTML = "";
-      extraEl.innerHTML = "";
 
-      const form = this.buildForm("", "", async (data) => {
+      const form = this.renderForm("", "", async (data) => {
         try {
           const created = await this.createPost(data);
 
           this.close();
-
-          const postsListEl = document.querySelector(".js-post-list");
-          const newPostHTML = `
-          <div class="post" data-id="${created.id}">
-            <h2 class="font-semibold text-2xl">${this.sanitizeText(
+          const postListEl = document.querySelector(".js-post-list");
+          const newPostHTML = `<div class="post" data-id="${created.id}">
+            <h2 class="font-semibold text-lg sm:text-xl md:text-2xl">${this.sanitizeText(
               created.title
             )}</h2>
             <p class="blog-desc mt-2 font-normal">${this.sanitizeText(
@@ -299,26 +292,23 @@ const app = {
             <div class="mt-3 flex justify-between">
               <button class="js-view-all-btn">Xem chi tiết</button>
               <div>
-                <button class="js-edit-btn">Sửa</button>
-                <button class="js-delete-btn">Xóa</button>
+                  <button class="js-edit-btn "><i class="fa-solid fa-pen text-[11px] mr-0"></i> Sửa</button>
+                  <button class="js-delete-btn "><i class="fa-solid fa-trash text-[13px] mr-1"></i>Xóa</button>
               </div>
             </div>
-          </div>
-        `;
-
-          postsListEl.insertAdjacentHTML("afterbegin", newPostHTML);
-        } catch (err) {
-          console.log(err);
-          alert("Lỗi khi thêm bài viết!");
+          </div>`;
+          postListEl.insertAdjacentHTML("afterbegin", newPostHTML);
+        } catch (error) {
+          this.renderError(".js-modal-content", error.message);
         }
       });
-
       extraEl.appendChild(form);
     });
   },
 
   async updatePost(id, data) {
-    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+    const url = `${BASE_URL}posts/${id}`;
+    const response = await fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -333,72 +323,67 @@ const app = {
 
   editPost() {
     const postsListEl = document.querySelector(".js-post-list");
-    const modalContentEl = document.querySelector(".js-modal-content");
-    const titleEl = modalContentEl.querySelector("h2");
-    const bodyEl = modalContentEl.querySelector("p");
+    const titleEl = document.querySelector(".js-modal-content h2");
+    const bodyEl = document.querySelector(".js-modal-content p");
     const extraEl = document.querySelector("#modal-extra");
 
     postsListEl.addEventListener("click", async (e) => {
       const editBtn = e.target.closest(".js-edit-btn");
       if (!editBtn) return;
 
-      const postCard = editBtn.closest(".post");
-      const id = postCard.dataset.id;
+      const post = editBtn.closest(".post");
+      const id = post.dataset.id;
 
       this.open();
 
       titleEl.innerHTML = "Edit Blog";
       bodyEl.innerHTML = "";
       extraEl.innerHTML = "Loading...";
-
       try {
+        extraEl.innerHTML = "";
         const oldData = await this.getSinglePost(id);
 
-        extraEl.innerHTML = "";
-
-        const form = this.buildForm(
+        const form = this.renderForm(
           oldData.title,
           oldData.body,
           async (newData) => {
             try {
               await this.updatePost(id, newData);
-
               this.close();
-              const titleInList = postCard.querySelector("h2");
-              const bodyInList = postCard.querySelector(".blog-desc");
+
+              const titleInList = post.querySelector("h2");
+              const bodyInList = post.querySelector(".blog-desc");
 
               titleInList.textContent = this.sanitizeText(newData.title);
               bodyInList.textContent = this.sanitizeText(newData.body);
-            } catch (err) {
-              console.log(err);
-              alert("Error updating post!");
+            } catch (error) {
+              this.renderError("#modal-extra", error.message);
             }
           }
         );
-
-        extraEl.appendChild(form);
-      } catch (err) {
-        console.log(err);
-        extraEl.innerHTML = "Unable to load post data.";
+        extraEl.append(form);
+      } catch (error) {
+        this.renderError(".js-modal-content h2", error.message);
       }
     });
   },
 
   async deletePost(id) {
-    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+    const url = `${BASE_URL}posts/${id}`;
+    const response = await fetch(url, {
       method: "DELETE",
     });
 
     if (!response.ok) {
-      throw new Error("Fail to delete post");
+      throw new Error(`Fail to delete post on id: ${id}`);
     }
 
     return await response.json();
   },
 
-  buildConfirmForm(message, onConfirm, onCancel) {
+  renderConfirmForm(message, onConfirm, onCancel) {
     const form = document.createElement("div");
-    form.className = "flex flex-col gap-4 p-3";
+    form.className = "form-confirm flex flex-col gap-4 p-3 text-xl";
 
     const msg = document.createElement("p");
     msg.className = "text-gray-800 text-lg";
@@ -410,22 +395,30 @@ const app = {
     const cancelBtn = document.createElement("button");
     cancelBtn.textContent = "Cancel";
     cancelBtn.className =
-      "px-4 py-2 border border-gray-400 rounded hover:bg-gray-200";
-    cancelBtn.onclick = () => onCancel && onCancel();
+      "cursor-pointer px-2 py-1 border border-gray-400 rounded hover:bg-gray-200";
+    cancelBtn.onclick = () => {
+      if (onCancel) {
+        onCancel();
+      }
+    };
 
     const confirmBtn = document.createElement("button");
     confirmBtn.textContent = "Delete";
     confirmBtn.className =
-      "px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700";
-    confirmBtn.onclick = () => onConfirm && onConfirm();
+      "cursor-pointer px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700";
 
+    confirmBtn.onclick = () => {
+      if (onConfirm) {
+        onConfirm();
+      }
+    };
     btnGroup.append(cancelBtn, confirmBtn);
 
     form.append(msg, btnGroup);
     return form;
   },
 
-  deletePostUI() {
+  removePost() {
     const postsListEl = document.querySelector(".js-post-list");
     const modalContentEl = document.querySelector(".js-modal-content");
     const titleEl = modalContentEl.querySelector("h2");
@@ -434,38 +427,60 @@ const app = {
 
     postsListEl.addEventListener("click", (e) => {
       const deleteBtn = e.target.closest(".js-delete-btn");
+      console.log(deleteBtn);
+
       if (!deleteBtn) return;
 
-      const postCard = deleteBtn.closest(".post");
-      const id = postCard.dataset.id;
-
+      const post = deleteBtn.closest(".post");
+      const id = post.dataset.id;
       this.open();
 
       titleEl.innerHTML = "Delete Blog";
       bodyEl.innerHTML = "";
       extraEl.innerHTML = "";
 
-      const form = this.buildConfirmForm(
+      const form = this.renderConfirmForm(
         "Do you sure you want to delete?",
         async () => {
           try {
             await this.deletePost(id);
 
-            postCard.remove();
+            post.remove();
 
             this.close();
-          } catch (err) {
-            console.log(err);
-            alert("Không thể xóa bài viết!");
+          } catch (error) {
+            this.renderError(".form-confirm", error.message);
+            setTimeout(() => {
+              this.close();
+            }, 2000);
           }
         },
-        () => {
-          this.close();
-        }
+        () => this.close()
       );
 
       extraEl.appendChild(form);
     });
+  },
+
+  open() {
+    const modalEl = document.querySelector(".js-modal");
+    modalEl.classList.add("show");
+  },
+
+  close() {
+    const modalEl = document.querySelector(".js-modal");
+    const closeModalEl = document.querySelector(".js-close-modal");
+    closeModalEl.onclick = () => {
+      modalEl.classList.remove("show");
+    };
+
+    modalEl.addEventListener("click", (e) => {
+      if (e.target === modalEl) {
+        modalEl.classList.remove("show");
+      }
+    });
+
+    modalEl.classList.remove("show");
   },
 };
 

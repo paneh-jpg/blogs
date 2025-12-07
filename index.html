@@ -5,11 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blogs</title>
 
+    <!-- Favicon  -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./favicon/site.webmanifest" />
+
     <!-- CND TailWind CSS  -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+    <!-- DOMPurify  -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <!-- Tailwind CSS Custom -->
     <style type="text/tailwindcss">
       @layer components {
+        .notification {
+          @apply font-semibold py-3 text-gray-600;
+        }
         .pagination {
           @apply select-none cursor-pointer hover:bg-green-300 border border-[#333] px-[19.5px] py-3.5 w-3 h-3 flex justify-center items-center;
         }
@@ -65,43 +92,16 @@
           max-width: 1200px;
         }
       }
-
-      .blog-desc {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      .sort-active {
-        background-color: yellow;
-      }
-
-      .no-scroll {
-        overflow: hidden;
-      }
-
-      #modal {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity visibility;
-        transition-duration: 0.5s;
-      }
-
-      #modal.show {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      #modal-container {
-        transform: scale(0.3);
-        transition: transform 0.5s;
-      }
-
-      #modal.show #modal-container {
-        transform: scale(1);
-      }
     </style>
+
+    <!-- Style CSS  -->
+    <link rel="stylesheet" href="./style.css" />
+
+    <!-- Font Awesome  -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
   </head>
   <body>
     <div class="container m-auto">
@@ -112,27 +112,29 @@
 
       <!-- Body  -->
       <main>
-        <!-- Search Form -->
         <div>
-          <form action="" id="search-form">
+          <!-- Search Form -->
+          <div class="mt-3">
             <input
-              class="js-search-input border border-[#ebebeb] outline-none focus:border-[#d1cccc] w-full mt-3 p-3 text-[16px]"
+              class="js-search-input mt-1 h-full text-[16px] outline-none focus:border-[#b1aeae] border border-[#ebebeb] w-full p-3"
               type="text"
               name=""
               placeholder="Search..."
             />
-          </form>
+          </div>
 
-          <!-- Action  -->
+          <!-- Action: Add New  -->
           <div class="mt-3">
             <button
               class="js-add-post select-none transition-all duration-100 cursor-pointer hover:bg-[yellow] font-semibold border border-[#ebebeb] px-2 py-1"
             >
+              <i class="fa-solid fa-plus text-sm mr-1"></i>
+
               Thêm mới
             </button>
           </div>
 
-          <!-- Action  -->
+          <!-- Action: Sort  -->
           <div class="mt-2">
             <button
               data-sort="desc"
@@ -148,8 +150,11 @@
             </button>
           </div>
 
-          <!-- Error  -->
-          <div class="js-error js-loading"></div>
+          <!-- Loading: Show/Hide Loading  -->
+          <div class="js-loading"></div>
+
+          <!-- Error: Show/Hide Error  -->
+          <div class="js-error"></div>
 
           <!-- Blogs List  -->
           <ul class="mt-3 js-post-list"></ul>
@@ -159,21 +164,25 @@
       <!-- Pagination  -->
       <footer class="my-4 flex flex-wrap js-paginate"></footer>
     </div>
+
+    <!-- Modal  -->
     <div
       id="modal"
       class="js-modal fixed inset-0 bg-[#0009] flex items-center justify-center"
     >
-      <div class="js-modal-loading hidden text-center py-4">Loading...</div>
-
+      <!-- Modal Container  -->
       <div
         id="modal-container"
-        class="w-[calc(100%-100px)] md:w-[calc(100%-200px)] bg-[#FFF] rounded-sm p-6"
+        class="w-[calc(100%-50px)] md:w-[calc(100%-300px)] bg-[#FFF] rounded-sm p-2 p-6"
       >
+        <!-- Close modal Button  -->
         <button
           class="js-close-modal absolute cursor-pointer flex items-center justify-center top-[10px] right-[10px] w-[25px] h-[25px] rounded-[50%] bg-[#ebebeb] hover:bg-[#333] hover:text-[#FFF]"
         >
           <span class="text-xl -mt-1 font-semibold">&times;</span>
         </button>
+
+        <!-- Modal Content  -->
         <div class="js-modal-content">
           <h2 class="text-2xl font-semibold"></h2>
           <div class="w-full h-[1px] bg-[#ebebeb] my-2"></div>
@@ -183,8 +192,6 @@
           id="modal-extra"
           class="mt-3 space-y-2 text-[15px] text-[#333]"
         ></div>
-
-        <div class="modal-footer"></div>
       </div>
     </div>
 
