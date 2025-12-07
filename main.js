@@ -152,7 +152,11 @@ const app = {
   paginate() {
     const paginateListEl = document.querySelector(".js-paginate");
     paginateListEl.addEventListener("click", (e) => {
-      const page = +e.target.innerHTML;
+      const btn = e.target.closest(".pagination");
+      if (!btn) return;
+
+      const page = Number(btn.textContent);
+      if (Number.isNaN(page)) return;
 
       this._query.page = page;
       window.scroll({
@@ -428,7 +432,6 @@ const app = {
 
     postsListEl.addEventListener("click", (e) => {
       const deleteBtn = e.target.closest(".js-delete-btn");
-      console.log(deleteBtn);
 
       if (!deleteBtn) return;
 
