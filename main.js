@@ -487,6 +487,8 @@ const app = {
         this.closeModal();
       }
     });
+
+    this.closeModal();
   },
 
   closeModal() {
