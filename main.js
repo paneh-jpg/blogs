@@ -97,7 +97,6 @@ const app = {
 
   renderError(element, error) {
     const errorEl = document.querySelector(element);
-    // errorEl.classList.add("notification");
     errorEl.textContent = error;
   },
 
@@ -471,9 +470,25 @@ const app = {
     });
   },
 
+  getScrollbarWidth() {
+    if (this._query.scrollbarWidth) {
+      return this._query.scrollbarWidth;
+    }
+    const box = document.createElement("div");
+    document.body.append(box);
+    Object.assign(box.style, {
+      position: "absolute;",
+      overflow: "scroll",
+      top: "-9999px",
+    });
+
+    const scrollbarWidth = box.offsetWidth - box.clientWidth;
+    return scrollbarWidth;
+  },
+
   open() {
     const modalEl = document.querySelector(".js-modal");
-    document.body.style.paddingRight = "16px";
+    document.body.style.paddingRight = this.getScrollbarWidth() + "px";
     document.body.classList.add("no-scroll");
     modalEl.classList.add("show");
   },
