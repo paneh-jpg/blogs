@@ -134,6 +134,7 @@ const app = {
     const btnSort = document.querySelectorAll(".js-sort-btn");
     btnSort.forEach((btn) => {
       btn.onclick = () => {
+        this._query.page = 1;
         const sortValue = btn.dataset.sort;
         const activeBtn = document.querySelector(".sort-active");
 
